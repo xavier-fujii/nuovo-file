@@ -12,8 +12,7 @@
     "eqeqeq": "warn",
     "prettier/prettier": "error",
     "no-throw-literal": "warn",
-    "semi": ["error", "never"],
-    "quotes": ["error", "single"]
+    "semi": ["error", "never"]
   },
   "ignorePatterns": ["out", "dist", "**/*.d.ts"],
   "extends": ["plugin:prettier/recommended"]

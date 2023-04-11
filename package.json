@@ -11,14 +11,6 @@
   ],
   "activationEvents": [],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "nuovo-file.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
     "compile": "tsc -p ./",
@@ -28,8 +20,60 @@
     "lintfix": "eslint src --ext ts --fix",
     "test": "node ./out/test/runTest.js"
   },
+  "contributes": {
+    "commands": [
+      {
+        "command": "nuovoFile.newFile",
+        "title": "Nuovo File"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "nuovoFile.newFile",
+        "key": "alt+ctrl+n",
+        "mac": "alt+cmd+n"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "nuovoFile configuration",
+      "properties": {
+        "nuovoFile.exclude": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "boolean"
+          },
+          "default": null,
+          "description": "Directories to ignore in auto-complete"
+        },
+        "nuovoFile.showInformationMessages": {
+          "type": "boolean",
+          "default": true,
+          "description": "Control whether top-bar notifications display"
+        },
+        "nuovoFile.convenienceOptions": {
+          "type": "array",
+          "default": [
+            "last",
+            "current",
+            "root"
+          ],
+          "description": "Convenience options display at the top of the list. Control which ones you see and in what order."
+        },
+        "nuovoFile.expandBraces": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether braces should be expanded to multiple paths (such as {test1,test2}.js creating two files, test1.js and test2.js"
+        }
+      }
+    }
+  },
   "devDependencies": {
-    "@types/glob": "^8.1.0",
+    "@types/braces": "^3.0.1",
+    "@types/lodash": "^4.14.192",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.76.0",
@@ -39,9 +83,15 @@
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "prettier": "^2.8.4",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "braces": "^3.0.2",
+    "globby": "^13.1.3",
+    "lodash": "^4.17.21",
+    "mkdirp": "^3.0.0",
+    "vscode-cache": "^0.3.0"
   }
 }
