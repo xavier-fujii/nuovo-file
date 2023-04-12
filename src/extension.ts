@@ -1,12 +1,14 @@
 import * as vscode from 'vscode'
 import type { ExtensionContext } from 'vscode'
 import * as path from 'path'
-import { compact, sortBy, startsWith, flatten } from 'lodash'
-import { globbySync } from 'globby'
+import sortBy from 'lodash/sortBy'
+import compact from 'lodash/compact'
+import startsWith from 'lodash/startsWith'
+import flatten from 'lodash/flatten'
 import type { DirectoryOption, FSLocation, WorkspaceRoot } from './types'
 import { Cache } from './cache'
 import * as fs from 'fs'
-import * as braces from 'braces'
+import braces from 'braces'
 import { mkdirp } from 'mkdirp'
 
 interface QuickPickItemWithOption extends vscode.QuickPickItem {
@@ -25,21 +27,21 @@ function isFolderDescriptor(filepath: string): boolean {
   return filepath.charAt(filepath.length - 1) === path.sep
 }
 
-function directoriesSync(root: string): FSLocation[] {
-  const k = import('globby').then((m) =>
-    m.globbySync('**', { cwd: root, gitignore: true })
-  )
-  const results = globbySync('**', { cwd: root, gitignore: true })
+async function directoriesSync(root: string): Promise<FSLocation[]> {
+  const globby = await import('globby')
+
+  return globby
+    .globbySync('**', {
+      cwd: root,
+      gitignore: true,
+      onlyDirectories: true,
+    })
     .map((f): FSLocation => {
       return {
         relative: path.join(path.sep, f),
         absolute: path.join(root, f),
       }
     })
-    .filter((f) => fs.statSync(f.absolute).isDirectory())
-    .map((f) => f)
-
-  return results
 }
 
 function convenienceOptions(roots: WorkspaceRoot[], cache: Cache) {
@@ -114,7 +116,7 @@ export function directories(root: string): Promise<FSLocation[]> {
   return new Promise((resolve, reject) => {
     const findDirectories = () => {
       try {
-        resolve(directoriesSync(root))
+        resolve(Promise.resolve(directoriesSync(root)))
       } catch (error) {
         reject(error)
       }

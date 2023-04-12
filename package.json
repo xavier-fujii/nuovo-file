@@ -13,8 +13,8 @@
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
     "pretest": "pnpm run compile && pnpm run lintfix",
     "lint": "eslint src --ext ts",
     "lintfix": "eslint src --ext ts --fix",
@@ -85,7 +85,10 @@
     "eslint-plugin-prettier": "^4.2.1",
     "mocha": "^10.2.0",
     "prettier": "^2.8.4",
-    "typescript": "^5.0.2"
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
     "braces": "^3.0.2",

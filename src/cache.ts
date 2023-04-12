@@ -43,21 +43,6 @@ class Cache {
     return this.context.globalState.update(this.namespace, this.cache)
   }
 
-  // Alias of put
-  set(key: string, value: any, expiration: number) {
-    return this.put(key, value, expiration)
-  }
-
-  // Alias of put
-  save(key: string, value: any, expiration: number) {
-    return this.put(key, value, expiration)
-  }
-
-  // Alias of put
-  store(key: string, value: any, expiration: number) {
-    return this.put(key, value, expiration)
-  }
-
   has(key: string) {
     if (typeof this.cache[key] === 'undefined') {
       return false
@@ -85,11 +70,6 @@ class Cache {
     }
   }
 
-  // Alias of has
-  exists(key: string) {
-    return this.has(key)
-  }
-
   forget(key: string) {
     if (typeof this.cache[key] === 'undefined') {
       return Promise.resolve(true)
@@ -98,14 +78,6 @@ class Cache {
     delete this.cache[key]
 
     return this.context.globalState.update(this.namespace, this.cache)
-  }
-
-  remove(key: string) {
-    return this.forget(key)
-  }
-
-  delete(key: string) {
-    return this.forget(key)
   }
 
   keys() {
