@@ -2,7 +2,7 @@
   "name": "nuovo-file",
   "displayName": "nuovo-file",
   "description": "create new files using keyboard",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.76.0"
   },

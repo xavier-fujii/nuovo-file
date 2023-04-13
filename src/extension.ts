@@ -116,7 +116,13 @@ function convenienceOptions(roots: WorkspaceRoot[], cache: Cache) {
   const optionsInter = config.map<QuickPickItemWithOption[]>(
     (c) => optionsByName[c]
   )
-  const options = optionsInter.reduce(flatten)
+
+  const options = []
+  for (const s of optionsInter) {
+    for (const s2 of s) {
+      options.push(s2)
+    }
+  }
 
   return compact<QuickPickItemWithOption>(options)
 }
@@ -336,8 +342,16 @@ export async function dirQuickPickItems(roots: WorkspaceRoot[], cache: Cache) {
   const dirOptions = await Promise.all(
     roots.map(async (r) => await subdirOptionsForRoot(r))
   )
-  let quickPickItems = dirOptions
-    .reduce(flatten)
+
+  const options = []
+
+  for (const s of dirOptions) {
+    for (const s2 of s) {
+      options.push(s2)
+    }
+  }
+
+  let quickPickItems = options
     .map((o) => buildQuickPickItem(o))
     .filter((i) => !!i) as QuickPickItemWithOption[]
 
