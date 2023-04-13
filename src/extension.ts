@@ -72,9 +72,12 @@ function gitignoreGlobs(root: string): string[] {
 
 async function directoriesSync(root: string): Promise<FSLocation[]> {
   const globby = await import('globby')
-  const ignore = gitignoreGlobs(root)
+  const ignoreFromgitignoreGlobs = gitignoreGlobs(root)
     .map(invertGlob)
-    .concat(configIgnoredGlobs(root))
+    .map((p) => p.replace('//', '/'))
+  const ignoreFromConfigGlobs = configIgnoredGlobs(root)
+
+  const ignore = [...ignoreFromgitignoreGlobs, ...ignoreFromConfigGlobs]
 
   return globby
     .globbySync('**', {
