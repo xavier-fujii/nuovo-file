@@ -9,6 +9,7 @@
   "categories": [
     "Other"
   ],
+  "repository": "https://github.com/xavier-fujii/nuovo-file",
   "activationEvents": [],
   "main": "./out/extension.js",
   "scripts": {
@@ -18,7 +19,9 @@
     "pretest": "pnpm run compile && pnpm run lintfix",
     "lint": "eslint src --ext ts",
     "lintfix": "eslint src --ext ts --fix",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies"
   },
   "contributes": {
     "commands": [
