@@ -10,6 +10,7 @@ import { Cache } from './cache'
 import * as fs from 'fs'
 import braces from 'braces'
 import { mkdirp } from 'mkdirp'
+import gitignoreToGlob from 'gitignore-to-glob'
 
 interface QuickPickItemWithOption extends vscode.QuickPickItem {
   option?: DirectoryOption
@@ -27,13 +28,58 @@ function isFolderDescriptor(filepath: string): boolean {
   return filepath.charAt(filepath.length - 1) === path.sep
 }
 
+function configIgnoredGlobs(root: string): string[] {
+  const configFilesExclude = Object.assign(
+    [],
+    vscode.workspace.getConfiguration('nuovoFile').get('exclude'),
+    vscode.workspace.getConfiguration('files.exclude', vscode.Uri.file(root))
+  )
+  const a = vscode.workspace.getConfiguration('nuovoFile').get('exclude')
+  const b = vscode.workspace.getConfiguration(
+    'files.exclude',
+    vscode.Uri.file(root)
+  )
+
+  return Object.keys(configFilesExclude).filter(
+    (key) => configFilesExclude[key] === true
+  )
+}
+
+function walkupGitignores(dir: string, found: string[] = []): string[] {
+  const gitignore = path.join(dir, '.gitignore')
+  if (fs.existsSync(gitignore)) {
+    found.push(gitignore)
+  }
+
+  const parentDir = path.resolve(dir, '..')
+  const reachedSystemRoot = dir === parentDir
+
+  if (!reachedSystemRoot) {
+    return walkupGitignores(parentDir, found)
+  } else {
+    return found
+  }
+}
+
+function invertGlob(pattern: string): string {
+  return pattern.replace(/^!/, '')
+}
+
+function gitignoreGlobs(root: string): string[] {
+  const gitignoreFiles = walkupGitignores(root)
+  return flatten(gitignoreFiles.map((g) => gitignoreToGlob(g)))
+}
+
 async function directoriesSync(root: string): Promise<FSLocation[]> {
   const globby = await import('globby')
+  const ignore = gitignoreGlobs(root)
+    .map(invertGlob)
+    .concat(configIgnoredGlobs(root))
 
   return globby
     .globbySync('**', {
       cwd: root,
-      gitignore: true,
+      ignore,
       onlyDirectories: true,
     })
     .map((f): FSLocation => {
