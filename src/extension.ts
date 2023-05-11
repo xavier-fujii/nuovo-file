@@ -95,9 +95,8 @@ async function directoriesSync(root: string): Promise<FSLocation[]> {
 
 function convenienceOptions(roots: WorkspaceRoot[], cache: Cache) {
   const config: ('last' | 'current' | 'root')[] =
-    vscode.workspace
-      .getConfiguration('advancedNewFile')
-      .get('convenienceOptions') ?? []
+    vscode.workspace.getConfiguration('nuovoFile').get('convenienceOptions') ??
+    []
 
   const lastItem = buildQuickPickItem(lastSelection(cache), '- last selection')
   const curItem = buildQuickPickItem(
